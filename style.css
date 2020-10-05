@@ -1,0 +1,41 @@
+#api {
+    width: 60%;
+    height: 50%;
+    left: 50%;
+    top: 50%;
+    position: absolute;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    border: 2px solid blueviolet;
+    border-radius: 10px;
+    padding: 30px;
+    background-color: coral;
+}
+
+#question {
+    font-size: 30px;
+    margin-bottom: 50px;
+}
+
+#score {
+    display: block;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 30px;
+}
+
+.btn {
+    font-size: 22px;
+}
+
+.btn:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
+#score {
+    height: 30px;
+    width: 40px;
+    font-size: 22px;
+}
