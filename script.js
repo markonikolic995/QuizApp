@@ -61,49 +61,64 @@ const questions = [
     }
 ]
 
-
-
-const buttons = document.getElementsByClassName('btn');
-const question = document.getElementById('question')
+const api = document.getElementById('api')
 const id = 0
 var array = []
+var score = 0
+
+const question = document.createElement("DIV")
+const answer = document.createElement("BUTTON")
 
 function displayQuestion(id) {
-    for(let i = 0; i < buttons.length; i++) {
-        question.innerHTML = questions[id].text
-        buttons[i].innerHTML = questions[id].answers[i]
-        buttons[i].name = questions[id].answers[i];
-        buttons[i].value = questions[id].number
-        array.push(id)
+    const textQuestion = document.createTextNode(questions[id].text)
+    question.appendChild(textQuestion)
+    question.setAttribute('id','question')
+    document.getElementById('api').appendChild(question)
+}
+
+function displayAnswers(id) {
+    for(let i = 0; i < questions[id].answers.length; i++) {
+        const answer = document.createElement("BUTTON")
+        const textAnswer = document.createTextNode(questions[id].answers[i])
+        answer.appendChild(textAnswer)
+        answer.setAttribute('class','btn')
+        answer.name = questions[id].answers[i]
+        answer.value = id
+        document.getElementById('api').appendChild(answer)
     }
 }
 
-window.onload = displayQuestion(id)
+function displayScore(score) {
+    const scoreEl = document.createElement("INPUT")
+    scoreEl.setAttribute('type', 'number')
+    scoreEl.setAttribute('id', 'score')
+    scoreEl.setAttribute('value',score)
+    document.getElementById('api').appendChild(scoreEl)
+}
 
-document.querySelectorAll('.btn').forEach( item => {
-    item.addEventListener('click', function(e){
-        const btnName = e.target.name
-        const btnValue = Number(e.target.value)
 
-        if(questions.length != btnValue + 1) {
-            checkAnswers(btnName, btnValue)
-            displayQuestion(array[array.length - 1] + 1)
-        }
-        else {
-            checkAnswers(btnName, btnValue)
-            const content = document.getElementById('content')
-            const final = document.getElementById('final')
-            const finalScore = document.getElementById('finalScore')
+function displayContent(id) {
+    displayQuestion(id)
+    displayAnswers(id)
+    displayScore(0)
+    array.push(id)
+}
 
-            content.setAttribute('hidden','')
-            final.removeAttribute('hidden')
-            finalScore.innerHTML = score
-        }
-    })
-})
 
-var score = document.getElementById('score').value
-document.getElementById('score').disabled = true
+window.onload = displayContent(id)
+
+function nextQuestion(num) {
+    document.getElementById('question').innerHTML = questions[num].text
+}
+
+function nextAnswers(num) {
+    const answers = document.getElementsByClassName('btn')
+    for(let i = 0; i < answers.length; i++) {
+        answers[i].innerHTML = questions[num].answers[i]
+        answers[i].value = num
+        answers[i].name = questions[num].answers[i]
+    }
+}
 
 function checkAnswers(name, value) {
     if(questions[value].trueAnswer == name) {
@@ -116,18 +131,56 @@ function checkAnswers(name, value) {
     }
 }
 
-const btnPlayAgain = document.getElementById('playAgain')
+function finalScore(scr) {
+    const btnAgain = document.createElement("BUTTON")
+    const paragraph = document.createElement("P")
+    const textParagraph = document.createTextNode('Vas konacan rezultat je:' + scr)
+    const textButton = document.createTextNode('Igraj ponovo')
+    paragraph.appendChild(textParagraph)
+    btnAgain.appendChild(textButton)
+    document.getElementById('api').appendChild(paragraph)
+    document.getElementById('api').appendChild(btnAgain)
+    paragraph.setAttribute('id','final')
+    btnAgain.setAttribute('id','again')
+    document.getElementById('score').disabled = true
 
-btnPlayAgain.addEventListener('click', function() {
-    array = []
-    score = 0
-    document.getElementById('score').value = score
+    for(let i = 0; i < document.getElementsByClassName('btn').length; i++) {
+        document.getElementsByClassName('btn')[i].disabled = true
+    }
 
-    const content = document.getElementById('content')
-    const final = document.getElementById('final')
+    document.getElementById('again').addEventListener('click',function(){
+        displayScore(0)
+        score = 0
+        document.getElementById('final').remove()
+        document.getElementById('again').remove()
+        for(let i = 0; i < document.getElementsByClassName('btn').length; i++) {
+            document.getElementsByClassName('btn')[i].disabled = false
+        }
+        array = []
 
-    final.setAttribute('hidden','')
-    content.removeAttribute('hidden')
+        nextQuestion(id)
+        nextAnswers(id)
+        array.push(id)
+    })
+}
 
-    displayQuestion(0)
+
+
+document.querySelectorAll('.btn').forEach(item => {
+    item.addEventListener('click', function(e){
+        const value = e.target.value
+        const name = e.target.name
+        checkAnswers(name, value)
+        displayScore(score)
+
+        if(questions.length != Number(value) + 1){
+            nextQuestion(array[array.length - 1] + 1)
+            nextAnswers(array[array.length -1] + 1)
+            array.push(array[array.length -1] + 1)
+        }
+        else {
+            finalScore(score)
+        }
+    })
 })
+
