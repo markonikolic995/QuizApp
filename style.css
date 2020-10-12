@@ -34,12 +34,14 @@
     cursor: pointer;
 }
 
-#score {
-    height: 30px;
-    width: 40px;
+#btnPlayAgain {
     font-size: 22px;
+    background-color: green;
+    color: white;
+    font-weight: 700;
 }
 
-#final {
-    margin-top: 80px;
+#btnPlayAgain:hover {
+    background-color: darkgreen;
+    cursor: pointer;
 }
